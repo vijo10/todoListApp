@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'navbar.html' %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 mb-2">
+            <div class="">
+                <div class="card mr-5 shadow" style="background: #130F40">
+                    <div class="card-body">
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            <div class="text-center">
+                                <h4 class="text-white">Todo Add</h4>
+                            </div>
+                            <hr class="text-white">
+                            <div class="form-group">
+                                <label for="" class="text-white">Title </label>
+                                <input type="text" class="form-control" name="new-todo">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="" class="text-white">Start Time </label>
+                                <input type="time" class="form-control" name="start">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="" class="text-white">End Time </label>
+                                <input type="time" class="form-control" name="end">
+                            </div>
+
+                            <div class="text-center mt-2">
+                                <input type="submit" class="btn btn-success btn-block mt-3" value="Add"
+                                    style="width:200px;" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+            <div class="">
+                <div class="card mr-5 shadow" style="background: #130F40">
+                    <div class="card-body">
+                        <div class="text-center">
+                            <h4 class="text-white">Todo List</h4>
+                        </div>
+                        <hr class="text-white">
+                        <div class="todo-list text-center">
+                            {% for todo in todos %}
+                            <div class="todo-content border border-white p-2 mb-2 d-flex justify-content-between">
+                                {% if todo.completed == True %}
+                                <div>
+                                    <strike class="lead text-white">{{ todo.title }}</strike>
+                                </div>
+                                <div class="text-white">
+                                    <strike class="lead text-white">{{ todo.Start_Time }}</strike> -
+                                    <strike class="lead text-white">{{ todo.End_Time }}</strike>
+                                </div>
+                                {% else %}
+                                <div>
+                                    <span class="lead text-white">{{ todo.title }}</span>
+                                </div>
+                                <div class="text-white">
+                                    <span class="lead text-white">{{ todo.Start_Time }}</span> -
+                                    <span class="lead text-white">{{ todo.End_Time }}</span>
+                                </div>
+                                {% endif %}
+                                <div>
+                                    <a href="{% url 'update' todo.id %}" class="btn btn-warning">Update</a>
+                                    <form action="{% url 'delete' todo.id %}" method="POST" class="d-inline-block">
+                                        {% csrf_token %}
+                                        <input type="submit" class="btn btn-danger" value="Delete" />
+                                    </form>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

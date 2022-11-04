@@ -1,0 +1,11 @@
+body{
+    background: gray;
+}
+
+.search-bar {
+    width: 40% !important;
+    margin-left: 10%;
+}
+a{
+    text-decoration: none;
+}
