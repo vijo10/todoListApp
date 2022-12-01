@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     'main'
 ]
 
-AUTH_USER_MODEL='main.USER'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -88,13 +88,9 @@ WSGI_APPLICATION = 'todoList.wsgi.application'
 
 DATABASES = {
    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME':env('DATABASE_NAME'),
-        'USER': env('DATABASE_USER'), 
-        'PASSWORD': env('DATABASE_PASS'),
-        'HOST':  env('HOST'),
-        'PORT': env('PORT'), 
-    }
+       'ENGINE': 'django.db.backends.sqlite3',
+       'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+   }
 }
 
 
