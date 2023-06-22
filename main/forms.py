@@ -4,19 +4,22 @@ from .models import Todo
 from django.contrib.auth.models import User
 
 
-class RegisterForm(UserCreationForm):
-    username=forms.CharField(widget=forms.TextInput(attrs={'class':"form-control my-2",'placeholder':"enter username"}))
-    email=forms.CharField(widget=forms.TextInput(attrs={'class':"form-control my-2",'placeholder':"enter email"}))
-    password1=forms.CharField(widget=forms.PasswordInput(attrs={'class':"form-control my-2",'placeholder':"enter password"}))
-    password2=forms.CharField(widget=forms.PasswordInput(attrs={'class':"form-control my-2",'placeholder':"conform password"}))
+class CustomUserCreationForm(UserCreationForm):
+    email=forms.CharField()
+
     class Meta:
-        model=User      
-        fields=["email","username","password1",'password2']  
+        model = User
+        fields = ('username', 'email', 'password1', 'password2')
+
+    def save(self, commit=True):
+        user = super(CustomUserCreationForm, self).save(commit=False)
+        user.email = self.cleaned_data['email']
+        if commit:
+            user.save()
+        return user            
        
 class TodoForm(forms.ModelForm):
-    Start_Time=forms.CharField(widget=forms.TextInput(attrs={'class':"form-control my-2",'type':"time"}))
-    End_Time=forms.CharField(widget=forms.TextInput(attrs={'class':"form-control my-2",'type':"time"}))
     class Meta:
         model=Todo
-        fields=["title","Start_Time","End_Time","completed"]
+        exclude=['user',]
   

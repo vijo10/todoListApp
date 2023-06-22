@@ -1,0 +1,20 @@
+{% for msg in messages %}
+<div class="alert alert-{{msg.tags}} alert-dismissible fade show" role="alert">
+    {{ msg }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+
+{% if form.errors%}
+{% if form.errors.email %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{form.errors.email}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>    
+{% elif form.errors.username %}
+    <div class="alert alert-danger alert-dismissible">{{form.errors.username}}</div>
+
+{% else %}
+    <div class="alert alert-danger alert-dismissible">{{form.errors.password2}}</div>
+{% endif %}
+{% endif %}

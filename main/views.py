@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from.forms import RegisterForm, TodoForm
+from.forms import TodoForm,CustomUserCreationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from .models import Todo
@@ -12,6 +12,8 @@ class Home(View):
             if 'productsearch' in request.GET:
                 productsearch=request.GET['productsearch'] 
                 todos = Todo.objects.filter(user=request.user,title__icontains= productsearch)
+                if todos.count()==0:
+                    messages.warning(request, 'There is no items found in this name')
             else:
                 todos = Todo.objects.filter(user=request.user)
             context = {"todos": todos}
@@ -19,12 +21,21 @@ class Home(View):
         else:
             messages.warning(request,"First you have to login")
             return redirect("/")  
+        
+class Create(View):
+    def get(self,request):
+        if request.user.is_authenticated:
+            return render(request,'create.html')
+        else:
+            messages.warning(request,"You need to log in first")
+            return redirect("login") 
+
     def post(self,request):
         todo_name = request.POST.get("new-todo")
-        todo_start = request.POST.get("start")
-        todo_end = request.POST.get("end")
-        todo = Todo.objects.create(title=todo_name, user=request.user,Start_Time=todo_start,End_Time=todo_end)
-        return redirect("home")     
+        todo_description = request.POST.get("description")
+        todo = Todo.objects.create(title=todo_name, user=request.user,description=todo_description)
+        messages.success(request,"You are successfully created new item")
+        return redirect("home")   
 
 class Update(View):
     def get(self,request,id):
@@ -41,6 +52,7 @@ class Update(View):
         form=TodoForm(request.POST,instance=todo)
         if form.is_valid():
             form.save()
+            messages.success(request,"You are successfully updated")
             return redirect("home")
 
 class Delete(View):
@@ -53,48 +65,51 @@ class Delete(View):
     def post(self,request,id):
         if request.user.is_authenticated:
             Todo.objects.get(id=id).delete()
+            messages.success(request,"You successfully deletd one item")
             return redirect("home")
         else:
             messages.warning(request,"You need to log in first")
             return redirect("login")
                 
+
+
 class Register(View):
-    def get(self,request):
+    def get(self, request):
         if request.user.is_authenticated:
-            messages.warning(request,"If you want create new account first logout your currently loged in account")
             return redirect("home")
         else:
-            form=RegisterForm()
-            context={'form':form}
-        return render(request,'register.html',context)
-    def post(self,request):
-        form=RegisterForm(request.POST)
+            form = CustomUserCreationForm()
+        return render(request, 'register.html', {'form': form})
+
+    def post(self, request):
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user=form.save(commit=False)
-            user.email=user.email.lower()
-            user.save()
-            login(request,user)
-            messages.success(request,"Registration Successfully completed")
-            return redirect("login")
+           form.save()
+           messages.success(request, "Registration is completed, Now you can login")
+           return redirect('login')   
+        return render(request, 'register.html', {'form': form})        
 
 class Login(View):
     def get(self,request):
         if request.user.is_authenticated:
-            messages.warning(request,"you are already login")
             return redirect("home")
         else:    
             return render(request,"login.html") 
     def post(self,request):
-        name=request.POST.get('email')
+        name=request.POST.get('username')
         passwd=request.POST.get('password')
         user=authenticate(request,username=name.lower(),password=passwd)
         if user is not None:
-            login(request,user)
-            messages.success(request,"Login succeccfully")
-            return redirect("home")
+            if not user.is_superuser:
+                login(request,user)
+                messages.success(request, f"{request.user.username} you are successfully login")
+                return redirect("home")
+            else:
+                messages.error(request, "Please enter valid credentials",extra_tags='danger')
+                return redirect('login')
         else:
-            messages.error(request,"invalid username or password")
-            return redirect("login")  
+          messages.error(request, "Invalid login credentials. Please try again.",extra_tags='danger')
+          return render(request, 'login.html')  
 
 class Logout(View):
     def get(self,request):

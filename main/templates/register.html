@@ -1,58 +1,27 @@
 {% extends 'base.html' %}
+{% block title %}
+Register
+{% endblock%}
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center mt-3">
-        <div class="col-md-6 mt-3">
-            <div class="">
-                <div class="card mr-5 shadow mt-4" style="background: #130F40">
-                    <div class="card-body">
-                        <form action="" method="POST">
-                            {% csrf_token %}
-                            <div class="text-center">
-                                <h4 class="text-white">Registration</h4>
-                            </div>
-                            <hr class="text-white">
-                            <div class="form-group">
-                                <label for="" class="text-white">Email </label>
-                                {{form.email}}
-                                {% if form.errors.email %}
-                                <label class="text-danger">{{form.errors.email}}</label>
-                                {% endif %}
-                            </div>
-                            <div class="form-group">
-                                <label for="" class="text-white">Username </label>
-                                {{form.username}}
-                                {% if form.errors.username %}
-                                <label class="text-danger mt-1">{{form.errors.username}}</label>
-                                {% endif %}
-                            </div>
-                            <div class="form-group">
-                                <label for="" class="text-white">Password </label>
-                                {{form.password1}}
-                                {% if form.errors.password1 %}
-                                <label class="text-danger">{{form.errors.password1}}</label>
-                                {% endif %}
-                            </div>
-                            <div class="form-group">
-                                <label for="" class="text-white">Conform Password </label>
-                                {{form.password2}}
-                                {% if form.errors.password2 %}
-                                <label class="text-danger">{{form.errors.password2}}</label>
-                                {% endif %}
-                            </div>
-                            <div class="text-center">
-                                <input type="submit" value="Register" class="btn btn-success">
-                            </div>
 
-                            <div class="mt-2 text-center text-white">
-                                You already have account?<a href="{% url 'login' %}">Login</a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+{% include 'alert.html' %}
 
-        </div>
+<form action="" method="POST" class="log">
+    {% csrf_token %}
+    <h4 class="text-center">Registration</h4>
+    <label for="">Email </label>
+    {{form.email}}
+    <label for="">Username </label>
+    {{form.username}}
+    <label for="">Password </label>
+    {{form.password1}}
+    <label for="">Conform Password </label>
+    {{form.password2}}
+    <input type="submit" value="Register" class="gre">
+    <div class="mt-2 text-center">
+        You already have account?<a href="{% url 'login' %}">Login</a>
     </div>
-</div>
+</form>
+
+
 {% endblock content %}
